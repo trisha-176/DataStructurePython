@@ -1,0 +1,67 @@
+CREATE TABLE DEPARTMENT
+(
+    Deptno VARCHAR2(3) PRIMARY KEY,
+    Dname VARCHAR2(10) CHECK (Dname IN ('Accounts','Purchase','Sales','Service'))
+);
+
+
+CREATE TABLE EMP
+(
+    Eno NUMBER(5) PRIMARY KEY,
+    Ename VARCHAR2(15) NOT NULL,
+    Deptno VARCHAR2(3),
+    Salary NUMBER(10,2)
+);
+
+INSERT INTO DEPARTMENT VALUES('D01', 'Accounts');
+INSERT INTO DEPARTMENT VALUES ('D02','Purchase');
+INSERT INTO DEPARTMENT VALUES ('D03','Sales');
+INSERT INTO DEPARTMENT VALUES ('D04','Service');
+INSERT INTO DEPARTMENT VALUES ('D05','Accounts');
+
+INSERT INTO EMP VALUES (101,'Rahul','D01',18000);
+INSERT INTO EMP VALUES (102,'Priya','D02',22000);
+INSERT INTO EMP VALUES (103,'Amit','D03',25000);
+INSERT INTO EMP VALUES (104,'Sneha','D04',20000);
+INSERT INTO EMP VALUES (105,'Kiran','D03',30000);
+
+COMMIT;
+
+UPDATE EMP
+SET Salary = Salary * 1.20
+WHERE Deptno IN
+(
+    SELECT Deptno
+    FROM DEPARTMENT
+    WHERE Dname IN ('Sales','Service')
+);
+
+SELECT Ename
+FROM EMP
+WHERE Deptno IN
+(
+    SELECT Deptno
+    FROM DEPARTMENT
+    WHERE Dname IN ('Accounts','Purchase','Sales')
+);
+
+SELECT Ename
+FROM EMP
+WHERE Salary > 20000
+AND Deptno IN
+(
+    SELECT Deptno
+    FROM DEPARTMENT
+    WHERE Dname IN ('Purchase','Sales')
+);
+
+SELECT D.Dname
+FROM DEPARTMENT D
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM EMP E
+    WHERE E.Deptno = D.Deptno
+);
+
+COMMIT;
